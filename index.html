@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="x-ua-compatible" content="ie=edge" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, user-scalable=no"
+		/>
+		<title>headview3d</title>
+		<style>
+			body {
+				font-family: "Helvetica Neue", "Helvetica", "Arial", "sans-serif";
+				margin: 5px;
+			}
+
+			h1 {
+				font-size: 1.25em;
+			}
+
+			h2 {
+				font-size: 1em;
+			}
+
+			h1,
+			h2 {
+				margin: 5px 0 0 0;
+			}
+
+			input[type="text"] {
+				box-sizing: border-box;
+			}
+
+			.control {
+				display: inline;
+			}
+
+			.control + .control {
+				margin-left: 10px;
+			}
+
+			.control-section {
+				margin-left: 10px;
+			}
+
+			.control-section > h1,
+			.control-section > h2 {
+				margin-left: -10px;
+			}
+
+			table {
+				border-collapse: collapse;
+			}
+
+			table td,
+			table th {
+				border: 1px black dashed;
+				text-align: left;
+			}
+
+			thead th {
+				border-top: unset;
+			}
+
+			tbody tr:last-child td,
+			tbody tr:last-child th {
+				border-bottom: unset;
+			}
+
+			table th:first-child,
+			table td:first-child {
+				border-left: unset;
+			}
+
+			table th:last-child,
+			table td:last-child {
+				border-right: unset;
+			}
+
+			table td input[type="checkbox"] {
+				vertical-align: middle;
+				margin: 0;
+				width: 100%;
+			}
+
+			footer {
+				margin-top: 10px;
+				padding-top: 10px;
+				border-top: 1px grey solid;
+			}
+
+			label {
+				white-space: nowrap;
+			}
+
+			.control-section ul {
+				margin-top: 0;
+				padding-left: 20px;
+			}
+
+			.hidden {
+				display: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<canvas id="skin_container"></canvas>
+
+		<div class="controls">
+			<button id="reset_all" type="button" class="control">Reset All</button>
+
+			<div class="control-section">
+				<h1>Viewport</h1>
+				<div>
+					<label class="control"
+						>Width: <input id="canvas_width" type="number" value="300" size="4"
+					/></label>
+					<label class="control"
+						>Height:
+						<input id="canvas_height" type="number" value="300" size="4"
+					/></label>
+				</div>
+				<div>
+					<label class="control"
+						>FOV:
+						<input
+							id="fov"
+							type="number"
+							value="70"
+							step="1"
+							min="1"
+							max="179"
+							size="2"
+					/></label>
+					<label class="control"
+						>Zoom:
+						<input
+							id="zoom"
+							type="number"
+							value="0.90"
+							step="0.01"
+							min="0.01"
+							max="2.00"
+							size="4"
+					/></label>
+				</div>
+			</div>
+
+			<div class="control-section">
+				<h1>Light</h1>
+				<label class="control"
+					>Global:
+					<input
+						id="global_light"
+						type="number"
+						value="0.40"
+						step="0.01"
+						min="0.00"
+						max="2.00"
+						size="4"
+				/></label>
+				<label class="control"
+					>Camera:
+					<input
+						id="camera_light"
+						type="number"
+						value="0.60"
+						step="0.01"
+						min="0.00"
+						max="2.00"
+						size="4"
+				/></label>
+			</div>
+
+			<div class="control-section">
+				<h1>Animation</h1>
+				<label class="control"
+					>Global Speed:
+					<input
+						id="global_animation_speed"
+						type="number"
+						value="1"
+						step="0.1"
+						size="3"
+				/></label>
+				<button id="animation_pause_resume" type="button" class="control">
+					Pause / Resume
+				</button>
+				<div>
+					<h2>Rotate</h2>
+					<label class="control"
+						><input id="rotate_animation" type="checkbox" /> Enable</label
+					>
+					<label class="control"
+						>Speed:
+						<input
+							id="rotate_animation_speed"
+							type="number"
+							value="1"
+							step="0.1"
+							size="3"
+					/></label>
+				</div>
+				<div>
+					<h2>Walk / Run / Fly</h2>
+					<div class="control">
+						<label
+							><input
+								type="radio"
+								id="primary_animation_none"
+								name="primary_animation"
+								value=""
+								checked
+							/>
+							None</label
+						>
+						<label
+							><input
+								type="radio"
+								id="primary_animation_walk"
+								name="primary_animation"
+								value="walk"
+							/>
+							Walk</label
+						>
+						<label
+							><input
+								type="radio"
+								id="primary_animation_run"
+								name="primary_animation"
+								value="run"
+							/>
+							Run</label
+						>
+						<label
+							><input
+								type="radio"
+								id="primary_animation_fly"
+								name="primary_animation"
+								value="fly"
+							/>
+							Fly</label
+						>
+					</div>
+					<label class="control"
+						>Speed:
+						<input
+							id="primary_animation_speed"
+							type="number"
+							value="1"
+							step="0.1"
+							size="3"
+					/></label>
+				</div>
+			</div>
+
+			<div class="control-section">
+				<h1>Mouse Control</h1>
+				<div class="control">
+					<label
+						><input type="checkbox" id="control_rotate" checked /> Enable
+						Rotate</label
+					>
+					<label
+						><input type="checkbox" id="control_zoom" checked /> Enable
+						Zoom</label
+					>
+					<label><input type="checkbox" id="control_pan" /> Enable Pan</label>
+				</div>
+			</div>
+
+			<div class="control-section">
+				<h1>Skin Layers</h1>
+				<table id="layers_table">
+					<thead>
+						<tr>
+							<th></th>
+							<th>head</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th>inner</th>
+							<td>
+								<input
+									type="checkbox"
+									data-layer="innerLayer"
+									data-part="head"
+									checked
+								/>
+							</td>
+						</tr>
+						<tr>
+							<th>outer</th>
+							<td>
+								<input
+									type="checkbox"
+									data-layer="outerLayer"
+									data-part="head"
+									checked
+								/>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="control-section">
+				<h1>Skin</h1>
+				<div>
+					<div class="control">
+						<label
+							>URL:
+							<input
+								id="skin_url"
+								type="text"
+								value="img/fl0rastey.png"
+								placeholder="none"
+								list="default_skins"
+								size="20"
+						/></label>
+						<datalist id="default_skins">
+							<option value="img/1_8_texturemap_redux.png"></option>
+							<option value="img/hacksore.png"></option>
+							<option value="img/haka.png"></option>
+							<option value="img/fl0rastey.png"></option>
+							<option value="img/hatsune_miku.png"></option>
+							<option value="img/ironman_hd.png"></option>
+							<option value="img/sethbling.png"></option>
+							<option value="img/deadmau5.png"></option>
+						</datalist>
+
+						<input
+							id="skin_url_upload"
+							type="file"
+							class="hidden"
+							accept="image/*"
+						/>
+						<button id="skin_url_unset" type="button" class="control hidden">
+							Unset
+						</button>
+						<button
+							type="button"
+							class="control"
+							onclick="document.getElementById('skin_url_upload').click();"
+						>
+							Browse...
+						</button>
+					</div>
+				</div>
+				<div>
+					<label class="control"
+						>Model:
+						<select id="skin_model">
+							<option value="auto-detect" selected>Auto detect</option>
+							<option value="default">Default</option>
+							<option value="slim">Slim</option>
+						</select>
+					</label>
+				</div>
+			</div>
+
+			<div class="control-section">
+				<h1>Ears</h1>
+				<div>
+					<label class="control"
+						>Source:
+						<select id="ears_source">
+							<option value="none">None</option>
+							<option value="current_skin">Current skin</option>
+							<option value="skin">Skin texture</option>
+							<option value="standalone">Standalone texture</option>
+						</select>
+					</label>
+				</div>
+				<div id="ears_texture_input">
+					<label class="control"
+						>URL:
+						<input
+							id="ears_url"
+							type="text"
+							value=""
+							placeholder="none"
+							list="default_ears"
+							size="20"
+					/></label>
+					<datalist id="default_ears">
+						<option value=""></option>
+						<option
+							value="img/ears.png"
+							data-texture-type="standalone"
+						></option>
+						<option value="img/deadmau5.png" data-texture-type="skin"></option>
+					</datalist>
+
+					<input
+						id="ears_url_upload"
+						type="file"
+						class="hidden"
+						accept="image/*"
+					/>
+					<button id="ears_url_unset" type="button" class="control hidden">
+						Unset
+					</button>
+					<button
+						type="button"
+						class="control"
+						onclick="document.getElementById('ears_url_upload').click();"
+					>
+						Browse...
+					</button>
+				</div>
+			</div>
+
+			<div class="control-section">
+				<h1>Panorama</h1>
+				<div class="control">
+					<label
+						>URL:
+						<input
+							id="panorama_url"
+							type="text"
+							value="img/panorama.png"
+							placeholder="none"
+							list="default_panorama"
+							size="20"
+					/></label>
+					<datalist id="default_panorama">
+						<option value=""></option>
+						<option value="img/panorama.png"></option>
+					</datalist>
+
+					<input
+						id="panorama_url_upload"
+						type="file"
+						class="hidden"
+						accept="image/*"
+					/>
+					<button id="panorama_url_unset" type="button" class="control hidden">
+						Unset
+					</button>
+					<button
+						type="button"
+						class="control"
+						onclick="document.getElementById('panorama_url_upload').click();"
+					>
+						Browse...
+					</button>
+				</div>
+			</div>
+
+			<div class="control-section">
+				<h1>Other examples</h1>
+				<ul>
+					<li><a href="offscreen-render.html">offscreen-render</a></li>
+				</ul>
+			</div>
+		</div>
+
+		<footer>
+			<div>
+				GitHub:
+				<a href="https://github.com/SMCodesP/headview3d">SMCodesP/headview3d</a>
+			</div>
+			<div>
+				Original project:
+				<a href="https://github.com/bs-community/skinview3d"
+					>bs-community/skinview3d</a
+				>
+			</div>
+			
+			<div>
+				Built from
+				commit <a href="https://github.com/SMCodesP/headview3d/commit/3e39438548b4d7534021d178e4825bee83706448">3e39438548b4d7534021d178e4825bee83706448</a>
+				at <time datetime="2022-03-02T21:05:18Z">2022-03-02T21:05:18Z</time>
+			</div>
+		
+		</footer>
+
+		<script src="js/headview3d.bundle.js"></script>
+		<script>
+			const skinParts = ["head"];
+			const skinLayers = ["innerLayer", "outerLayer"];
+			const availableAnimations = {
+				walk: headview3d.WalkingAnimation,
+				run: headview3d.RunningAnimation,
+				fly: headview3d.FlyingAnimation,
+			};
+
+			let skinViewer;
+			let orbitControl;
+			let rotateAnimation;
+			let primaryAnimation;
+
+			function obtainTextureUrl(id) {
+				const urlInput = document.getElementById(id);
+				const fileInput = document.getElementById(id + "_upload");
+				const unsetButton = document.getElementById(id + "_unset");
+				const file = fileInput.files[0];
+				if (file === undefined) {
+					if (!unsetButton.classList.contains("hidden")) {
+						unsetButton.classList.add("hidden");
+					}
+					return urlInput.value;
+				} else {
+					unsetButton.classList.remove("hidden");
+					urlInput.value = `Local file: ${file.name}`;
+					urlInput.readOnly = true;
+					return URL.createObjectURL(file);
+				}
+			}
+
+			function reloadSkin() {
+				const input = document.getElementById("skin_url");
+				const url = obtainTextureUrl("skin_url");
+				if (url === "") {
+					skinViewer.loadSkin(null);
+					input.setCustomValidity("");
+				} else {
+					skinViewer
+						.loadSkin(url, {
+							model: document.getElementById("skin_model").value,
+							ears:
+								document.getElementById("ears_source").value === "current_skin",
+						})
+						.then(() => input.setCustomValidity(""))
+						.catch((e) => {
+							input.setCustomValidity("Image can't be loaded.");
+							console.error(e);
+						});
+				}
+			}
+
+			function reloadEars(skipSkinReload = false) {
+				const sourceType = document.getElementById("ears_source").value;
+				let hideInput = true;
+				if (sourceType === "none") {
+					skinViewer.loadEars(null);
+				} else if (sourceType === "current_skin") {
+					if (!skipSkinReload) {
+						reloadSkin();
+					}
+				} else {
+					hideInput = false;
+					document
+						.querySelectorAll("#default_ears option[data-texture-type]")
+						.forEach((opt) => {
+							opt.disabled = opt.dataset.textureType !== sourceType;
+						});
+
+					const input = document.getElementById("ears_url");
+					const url = obtainTextureUrl("ears_url");
+					if (url === "") {
+						skinViewer.loadEars(null);
+						input.setCustomValidity("");
+					} else {
+						skinViewer
+							.loadEars(url, { textureType: sourceType })
+							.then(() => input.setCustomValidity(""))
+							.catch((e) => {
+								input.setCustomValidity("Image can't be loaded.");
+								console.error(e);
+							});
+					}
+				}
+
+				const el = document.getElementById("ears_texture_input");
+				if (hideInput) {
+					if (!el.classList.contains("hidden")) {
+						el.classList.add("hidden");
+					}
+				} else {
+					el.classList.remove("hidden");
+				}
+			}
+
+			function reloadPanorama() {
+				const input = document.getElementById("panorama_url");
+				const url = obtainTextureUrl("panorama_url");
+				if (url === "") {
+					skinViewer.background = "white";
+					input.setCustomValidity("");
+				} else {
+					skinViewer
+						.loadPanorama(url)
+						.then(() => input.setCustomValidity(""))
+						.catch((e) => {
+							input.setCustomValidity("Image can't be loaded.");
+							console.error(e);
+						});
+				}
+			}
+
+			function initializeControls() {
+				document
+					.getElementById("canvas_width")
+					.addEventListener(
+						"change",
+						(e) => (skinViewer.width = e.target.value)
+					);
+				document
+					.getElementById("canvas_height")
+					.addEventListener(
+						"change",
+						(e) => (skinViewer.height = e.target.value)
+					);
+				document
+					.getElementById("fov")
+					.addEventListener("change", (e) => (skinViewer.fov = e.target.value));
+				document
+					.getElementById("zoom")
+					.addEventListener(
+						"change",
+						(e) => (skinViewer.zoom = e.target.value)
+					);
+				document
+					.getElementById("global_light")
+					.addEventListener(
+						"change",
+						(e) => (skinViewer.globalLight.intensity = e.target.value)
+					);
+				document
+					.getElementById("camera_light")
+					.addEventListener(
+						"change",
+						(e) => (skinViewer.cameraLight.intensity = e.target.value)
+					);
+				document
+					.getElementById("global_animation_speed")
+					.addEventListener(
+						"change",
+						(e) => (skinViewer.animations.speed = e.target.value)
+					);
+				document
+					.getElementById("animation_pause_resume")
+					.addEventListener(
+						"click",
+						() => (skinViewer.animations.paused = !skinViewer.animations.paused)
+					);
+				document
+					.getElementById("rotate_animation")
+					.addEventListener("change", (e) => {
+						if (e.target.checked && rotateAnimation === null) {
+							rotateAnimation = skinViewer.animations.add(
+								headview3d.RotatingAnimation
+							);
+							rotateAnimation.speed = document.getElementById(
+								"rotate_animation_speed"
+							).value;
+						} else if (!e.target.checked && rotateAnimation !== null) {
+							rotateAnimation.resetAndRemove();
+							rotateAnimation = null;
+						}
+					});
+				document
+					.getElementById("rotate_animation_speed")
+					.addEventListener("change", (e) => {
+						if (rotateAnimation !== null) {
+							rotateAnimation.speed = e.target.value;
+						}
+					});
+				for (const el of document.querySelectorAll(
+					'input[type="radio"][name="primary_animation"]'
+				)) {
+					el.addEventListener("change", (e) => {
+						if (primaryAnimation !== null) {
+							primaryAnimation.resetAndRemove();
+							primaryAnimation = null;
+						}
+						if (e.target.value !== "") {
+							primaryAnimation = skinViewer.animations.add(
+								availableAnimations[e.target.value]
+							);
+							primaryAnimation.speed = document.getElementById(
+								"primary_animation_speed"
+							).value;
+						}
+					});
+				}
+				document
+					.getElementById("primary_animation_speed")
+					.addEventListener("change", (e) => {
+						if (primaryAnimation !== null) {
+							primaryAnimation.speed = e.target.value;
+						}
+					});
+				document
+					.getElementById("control_rotate")
+					.addEventListener(
+						"change",
+						(e) => (orbitControl.enableRotate = e.target.checked)
+					);
+				document
+					.getElementById("control_zoom")
+					.addEventListener(
+						"change",
+						(e) => (orbitControl.enableZoom = e.target.checked)
+					);
+				document
+					.getElementById("control_pan")
+					.addEventListener(
+						"change",
+						(e) => (orbitControl.enablePan = e.target.checked)
+					);
+				for (const part of skinParts) {
+					for (const layer of skinLayers) {
+						document
+							.querySelector(
+								`#layers_table input[type="checkbox"][data-part="${part}"][data-layer="${layer}"]`
+							)
+							.addEventListener(
+								"change",
+								(e) =>
+									(skinViewer.playerObject.skin[part][layer].visible =
+										e.target.checked)
+							);
+					}
+				}
+
+				const initializeUploadButton = (id, callback) => {
+					const urlInput = document.getElementById(id);
+					const fileInput = document.getElementById(id + "_upload");
+					const unsetButton = document.getElementById(id + "_unset");
+					const unsetAction = () => {
+						urlInput.readOnly = false;
+						urlInput.value = "";
+						fileInput.value = fileInput.defaultValue;
+						callback();
+					};
+					fileInput.addEventListener("change", (e) => callback());
+					urlInput.addEventListener("keydown", (e) => {
+						if (e.key === "Backspace" && urlInput.readOnly) {
+							unsetAction();
+						}
+					});
+					unsetButton.addEventListener("click", (e) => unsetAction());
+				};
+				initializeUploadButton("skin_url", reloadSkin);
+				initializeUploadButton("ears_url", reloadEars);
+				initializeUploadButton("panorama_url", reloadPanorama);
+
+				document
+					.getElementById("skin_url")
+					.addEventListener("change", () => reloadSkin());
+				document
+					.getElementById("skin_model")
+					.addEventListener("change", () => reloadSkin());
+				document
+					.getElementById("ears_source")
+					.addEventListener("change", () => reloadEars());
+				document
+					.getElementById("ears_url")
+					.addEventListener("change", () => reloadEars());
+				document
+					.getElementById("panorama_url")
+					.addEventListener("change", () => reloadPanorama());
+
+				for (const el of document.querySelectorAll(
+					'input[type="radio"][name="back_equipment"]'
+				)) {
+					el.addEventListener("change", (e) => {
+						if (skinViewer.playerObject.backEquipment === null) {
+							// cape texture hasn't been loaded yet
+							// this option will be processed on texture loading
+						} else {
+							skinViewer.playerObject.backEquipment = e.target.value;
+						}
+					});
+				}
+
+				document.getElementById("reset_all").addEventListener("click", () => {
+					skinViewer.dispose();
+					orbitControl.dispose();
+					initializeViewer();
+				});
+			}
+
+			function initializeViewer() {
+				skinViewer = new headview3d.FXAASkinViewer({
+					canvas: document.getElementById("skin_container"),
+				});
+				orbitControl = headview3d.createOrbitControls(skinViewer);
+				rotateAnimation = null;
+				primaryAnimation = null;
+
+				skinViewer.width = document.getElementById("canvas_width").value;
+				skinViewer.height = document.getElementById("canvas_height").value;
+				skinViewer.fov = document.getElementById("fov").value;
+				skinViewer.zoom = document.getElementById("zoom").value;
+				skinViewer.globalLight.intensity =
+					document.getElementById("global_light").value;
+				skinViewer.cameraLight.intensity =
+					document.getElementById("camera_light").value;
+				skinViewer.animations.speed = document.getElementById(
+					"global_animation_speed"
+				).value;
+				if (document.getElementById("rotate_animation").checked) {
+					rotateAnimation = skinViewer.animations.add(
+						headview3d.RotatingAnimation
+					);
+					rotateAnimation.speed = document.getElementById(
+						"rotate_animation_speed"
+					).value;
+				}
+				const primaryAnimationName = document.querySelector(
+					'input[type="radio"][name="primary_animation"]:checked'
+				).value;
+				if (primaryAnimationName !== "") {
+					primaryAnimation = skinViewer.animations.add(
+						availableAnimations[primaryAnimationName]
+					);
+					primaryAnimation.speed = document.getElementById(
+						"primary_animation_speed"
+					).value;
+				}
+				orbitControl.enableRotate =
+					document.getElementById("control_rotate").checked;
+				orbitControl.enableZoom =
+					document.getElementById("control_zoom").checked;
+				orbitControl.enablePan = document.getElementById("control_pan").checked;
+				for (const part of skinParts) {
+					for (const layer of skinLayers) {
+						skinViewer.playerObject.skin[part][layer].visible =
+							document.querySelector(
+								`#layers_table input[type="checkbox"][data-part="${part}"][data-layer="${layer}"]`
+							).checked;
+					}
+				}
+				reloadSkin();
+				reloadEars(true);
+				reloadPanorama();
+			}
+
+			initializeControls();
+			initializeViewer();
+		</script>
+
+		<script
+			type="module"
+			src="https://unpkg.com/stats.js@0.17.0/src/Stats.js"
+			integrity="sha384-W71K+d2HbqXqQWSj3Vj4RDsIVvIV7lR8O6RArKAiqB39ntwLci0W08qOn4Z1n8sM"
+			crossorigin="anonymous"
+			async
+		></script>
+		<script type="module" async>
+			import Stats from "https://unpkg.com/stats.js@0.17.0/src/Stats.js";
+			const stats = new Stats();
+			stats.dom.style.left = "";
+			stats.dom.style.right = "0";
+			document.body.appendChild(stats.dom);
+			function loop() {
+				stats.update();
+				requestAnimationFrame(loop);
+			}
+			requestAnimationFrame(loop);
+		</script>
+	</body>
+</html>
