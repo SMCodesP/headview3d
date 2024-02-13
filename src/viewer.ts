@@ -162,11 +162,11 @@ export interface SkinViewerOptions {
 	 * @defaultValue If unspecified, the ears will be invisible.
 	 */
 	ears?:
-	| "current-skin"
-	| {
-		textureType: "standalone" | "skin";
-		source: RemoteImage | TextureSource;
-	};
+		| "current-skin"
+		| {
+				textureType: "standalone" | "skin";
+				source: RemoteImage | TextureSource;
+		  };
 
 	/**
 	 * Whether to preserve the buffers until manually cleared or overwritten.
@@ -384,7 +384,6 @@ export class SkinViewer {
 		this.playerObject = new PlayerObject();
 		this.playerObject.name = "player";
 		this.playerObject.skin.visible = false;
-		this.playerObject.cape.visible = false;
 		this.playerWrapper = new Group();
 		this.playerWrapper.add(this.playerObject);
 		this.scene.add(this.playerWrapper);
@@ -485,8 +484,6 @@ export class SkinViewer {
 		this.capeTexture = new CanvasTexture(this.capeCanvas);
 		this.capeTexture.magFilter = NearestFilter;
 		this.capeTexture.minFilter = NearestFilter;
-		this.playerObject.cape.map = this.capeTexture;
-		this.playerObject.elytra.map = this.capeTexture;
 	}
 
 	private recreateEarsTexture(): void {
@@ -566,8 +563,6 @@ export class SkinViewer {
 
 	resetCape(): void {
 		this.playerObject.backEquipment = null;
-		this.playerObject.cape.map = null;
-		this.playerObject.elytra.map = null;
 		if (this.capeTexture !== null) {
 			this.capeTexture.dispose();
 			this.capeTexture = null;
@@ -866,7 +861,7 @@ export class SkinViewer {
 			// Add the new name tag to the scene
 			this.playerWrapper.add(newVal);
 			// Set y position
-			newVal.position.y = 20;
+			newVal.position.y = 10;
 		}
 
 		this._nameTag = newVal;
