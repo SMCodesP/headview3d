@@ -1,7 +1,7 @@
 {
-	"name": "skinview3d",
+	"name": "headview3d",
 	"version": "3.0.1",
-	"description": "Three.js powered Minecraft skin viewer",
+	"description": "This is a fork of skinview3d, a 3D Minecraft skin viewer for the web.",
 	"main": "libs/skinview3d.js",
 	"type": "module",
 	"scripts": {
@@ -21,7 +21,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/bs-community/skinview3d.git"
+		"url": "git+https://github.com/SMcodesP/headview3d.git"
 	},
 	"author": "Haowei Wen <yushijinhun@gmail.com> (https://github.com/yushijinhun)",
 	"contributors": [
@@ -32,9 +32,9 @@
 	],
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/bs-community/skinview3d/issues"
+		"url": "https://github.com/SMcodesP/headview3d/issues"
 	},
-	"homepage": "https://github.com/bs-community/skinview3d",
+	"homepage": "https://github.com/SMcodesP/headview3d",
 	"files": [
 		"libs",
 		"bundles",
