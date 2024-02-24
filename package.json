@@ -1,6 +1,6 @@
 {
 	"name": "headview3d",
-	"version": "3.0.1",
+	"version": "3.0.2",
 	"description": "This is a fork of skinview3d, a 3D Minecraft skin viewer for the web.",
 	"main": "libs/skinview3d.js",
 	"type": "module",
