@@ -1,4 +1,4 @@
-# skinview3d
+# headview3d
 
 This is a fork of the original skinview3d project by [bs-community](https://github.com/bs-community/skinview3d), for the render head skin 3D.
 
@@ -21,14 +21,14 @@ Three.js powered Minecraft skin viewer.
 
 # Usage
 
-[Example of using skinview3d](https://bs-community.github.io/skinview3d/)
+[Example of using headview3d](https://smcodesp.github.io/headview3d/)
 
-[![CodeSandbox](https://img.shields.io/badge/Codesandbox-040404?style=for-the-badge&logo=codesandbox&logoColor=DBDBDB)](https://codesandbox.io/s/skinview3d-template-vdmuh4)
+[![CodeSandbox](https://img.shields.io/badge/Codesandbox-040404?style=for-the-badge&logo=codesandbox&logoColor=DBDBDB)](https://codesandbox.io/p/sandbox/headview3d-template-9ck47g)
 
 ```html
 <canvas id="skin_container"></canvas>
 <script>
-	let skinViewer = new skinview3d.SkinViewer({
+	let skinViewer = new headview3d.SkinViewer({
 		canvas: document.getElementById("skin_container"),
 		width: 300,
 		height: 400,
@@ -36,8 +36,8 @@ Three.js powered Minecraft skin viewer.
 	});
 
 	// Change viewer size
-	skinViewer.width = 600;
-	skinViewer.height = 800;
+	skinViewer.width = 400;
+	skinViewer.height = 400;
 
 	// Load another skin
 	skinViewer.loadSkin("img/skin2.png");
@@ -61,7 +61,7 @@ Three.js powered Minecraft skin viewer.
 	skinViewer.autoRotate = true;
 
 	// Apply an animation
-	skinViewer.animation = new skinview3d.WalkingAnimation();
+	skinViewer.animation = new headview3d.WalkingAnimation();
 
 	// Set the speed of the animation
 	skinViewer.animation.speed = 3;
@@ -99,7 +99,7 @@ Usage:
 
 ```js
 // You can specify ears in the constructor:
-new skinview3d.SkinViewer({
+new headview3d.SkinViewer({
 	skin: "img/deadmau5.png",
 
 	// Use ears drawn on the current skin (img/deadmau5.png)
@@ -129,7 +129,7 @@ Usage:
 skinViewer.nameTag = "hello";
 
 // Specify the text color
-skinViewer.nameTag = new skinview3d.NameTagObject("hello", { textStyle: "yellow" });
+skinViewer.nameTag = new headview3d.NameTagObject("hello", { textStyle: "yellow" });
 
 // Unset the name tag
 skinViewer.nameTag = null;
