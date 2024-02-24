@@ -166,7 +166,7 @@ export interface SkinViewerOptions {
 		| {
 				textureType: "standalone" | "skin";
 				source: RemoteImage | TextureSource;
-		  };
+			};
 
 	/**
 	 * Whether to preserve the buffers until manually cleared or overwritten.

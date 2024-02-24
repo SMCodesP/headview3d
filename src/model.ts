@@ -238,7 +238,7 @@ export class PlayerObject extends Group {
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	set backEquipment(value: BackEquipment | null) {}
+	set backEquipment(_value: BackEquipment | null) {}
 
 	resetJoints(): void {
 		this.skin.resetJoints();

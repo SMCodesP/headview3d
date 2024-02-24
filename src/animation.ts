@@ -76,7 +76,8 @@ export class FunctionAnimation extends PlayerAnimation {
 }
 
 export class IdleAnimation extends PlayerAnimation {
-	protected animate(player: PlayerObject): void {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	protected animate(_player: PlayerObject): void {
 		// Multiply by animation's natural speed
 	}
 }
